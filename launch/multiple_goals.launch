@@ -1,0 +1,5 @@
+<launch>
+    <node pkg="multiple_goals" type="multiple_goals" name="multiple_goals" output="screen"/>
+    <!--<node pkg="simple_navigation_goals" type="simple_navigation_goals.py" name="simple_navigation_goals" output="screen"/> ->
+
+</launch>
