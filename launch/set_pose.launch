@@ -1,0 +1,3 @@
+<launch>
+    <node pkg="multiple_goals" type="set_initial_pose.py" name="set_pose" output="screen"/>
+</launch>

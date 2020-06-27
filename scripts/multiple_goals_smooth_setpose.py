@@ -33,7 +33,14 @@ class MoveBaseSeq():
             # the current goal pose and the current pose
             self.cur_goal_pose = Pose()
             self.cur_pose = Pose()
-      
+            # the list of set poses
+            set_pose_0 = [0, 0, 0]
+            set_pose_1 = [1.8, 0, -math.pi/2]
+            set_pose_list = [set_pose_0, set_pose_1]
+
+            self.set_pose_list = set_pose_list
+            self.set_pose_id = 0
+
              #Create action client
             self.client = actionlib.SimpleActionClient('move_base',MoveBaseAction)
             rospy.loginfo("Waiting for move_base action server...")
@@ -142,6 +149,24 @@ class MoveBaseSeq():
 
             if status == 8:
                   rospy.loginfo("Goal pose "+str(self.goal_cnt)+" received a cancel request before it started executing, successfully cancelled!")
+
+    def set_pose(self):
+            sp_id = self.set_pose_id
+            set_pose = PoseWithCovarianceStamped()
+
+            set_pose.header.frame_id = "map"
+            set_pose.header.stamp = rospy.Time.now()
+
+            set_pose.pose.pose.position.x = self.set_pose_list[sp_id][0]
+            set_pose.pose.pose.position.y = self.set_pose_list[sp_id][0]
+
+            quat = Quaternion()
+            quat = quaternion_from_euler(0.0, 0.0, self.set_pose_list[sp_id][2])
+            set_pose.pose.pose.orientation = Quaternion(*quat)
+ 
+            self.pub_set_pose.publish(set_pose)
+            rospy.loginfo("Connected to move base server" + str(set_pose))
+
 
 
     def movebase_client(self):
