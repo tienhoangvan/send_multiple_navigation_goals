@@ -50,15 +50,16 @@ class MoveBaseSeq():
             #rospy.loginfo("Feedback for goal "+str(self.goal_cnt)+": "+str(feedback))
             #rospy.loginfo("Feedback for goal pose "+str(self.goal_cnt+1)+" received")
             self.cur_pose = feedback.base_position.pose
-            if self.goal_cnt <= len(self.pose_seq) - 1:
-                  #rospy.loginfo("goal_cnt: " + str(self.goal_cnt))
-                  if self.goal_type_list[self.goal_cnt] == 1:
+            if self.goal_type_list[self.goal_cnt] == 1:
+                  if self.goal_cnt <= len(self.pose_seq) - 1:
+                        #rospy.loginfo("goal_cnt: " + str(self.goal_cnt))
+                  
                         dx = self.cur_goal_pose.position.x - self.cur_pose.position.x
                         dy = self.cur_goal_pose.position.y - self.cur_pose.position.y
                         dxy = math.hypot(dx, dy)
                         #rospy.loginfo("dxy: "+str(dxy))
 
-                        if dxy <= 0.3:
+                        if dxy <= 0.5:
                               self.goal_cnt = self.goal_cnt + 1
                               rospy.loginfo("Goal pose "+str(self.goal_cnt)+" reached")
                               if self.goal_cnt< len(self.pose_seq):
@@ -94,12 +95,12 @@ class MoveBaseSeq():
                         return
       
     def done_cb(self, status, result):
+            if self.goal_type_list[self.goal_cnt] == 0:
             # Reference for terminal status values: http://docs.ros.org/diamondback/api/actionlib_msgs/html/msg/GoalStatus.html
-            if status == 2:
-                  rospy.loginfo("Goal pose "+str(self.goal_cnt)+" received a cancel request after it started executing, completed execution!")
+                  if status == 2:
+                        rospy.loginfo("Goal pose "+str(self.goal_cnt)+" received a cancel request after it started executing, completed execution!")
 
-            if status == 3:
-                  if self.goal_type_list[self.goal_cnt] == 0:
+                  if status == 3:
                         self.goal_cnt += 1
                         rospy.loginfo("Goal pose "+str(self.goal_cnt)+" reached") 
                         if self.goal_cnt< len(self.pose_seq):

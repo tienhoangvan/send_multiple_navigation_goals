@@ -101,12 +101,12 @@ class MoveBaseSeq():
                         return
       
     def done_cb(self, status, result):
+            if self.goal_type_list[self.goal_cnt] == 0:
             # Reference for terminal status values: http://docs.ros.org/diamondback/api/actionlib_msgs/html/msg/GoalStatus.html
-            if status == 2:
-                  rospy.loginfo("Goal pose "+str(self.goal_cnt)+" received a cancel request after it started executing, completed execution!")
+                  if status == 2:
+                        rospy.loginfo("Goal pose "+str(self.goal_cnt)+" received a cancel request after it started executing, completed execution!")
 
-            if status == 3:
-                  if self.goal_type_list[self.goal_cnt] == 0:
+                  if status == 3:
                         self.goal_cnt += 1
                         rospy.loginfo("Goal pose "+str(self.goal_cnt)+" reached") 
                         if self.goal_cnt< len(self.pose_seq):
@@ -121,7 +121,7 @@ class MoveBaseSeq():
                               point.x = self.pose_seq[self.goal_cnt][0]
                               point.y = self.pose_seq[self.goal_cnt][1]
                               goal_pose.position = Point(point.x, point.y, 0)
-                
+                  
                               quat = quaternion_from_euler(0.0, 0.0, self.pose_seq[self.goal_cnt][2])
                               goal_pose.orientation = Quaternion(*quat)
 
@@ -137,18 +137,18 @@ class MoveBaseSeq():
                               rospy.signal_shutdown("Final goal pose reached!")
                               return
 
-            if status == 4:
-                  rospy.loginfo("Goal pose "+str(self.goal_cnt)+" was aborted by the Action Server")
-                  rospy.signal_shutdown("Goal pose "+str(self.goal_cnt)+" aborted, shutting down!")
-                  return
+                  if status == 4:
+                        rospy.loginfo("Goal pose "+str(self.goal_cnt)+" was aborted by the Action Server")
+                        rospy.signal_shutdown("Goal pose "+str(self.goal_cnt)+" aborted, shutting down!")
+                        return
 
-            if status == 5:
-                  rospy.loginfo("Goal pose "+str(self.goal_cnt)+" has been rejected by the Action Server")
-                  rospy.signal_shutdown("Goal pose "+str(self.goal_cnt)+" rejected, shutting down!")
-                  return
+                  if status == 5:
+                        rospy.loginfo("Goal pose "+str(self.goal_cnt)+" has been rejected by the Action Server")
+                        rospy.signal_shutdown("Goal pose "+str(self.goal_cnt)+" rejected, shutting down!")
+                        return
 
-            if status == 8:
-                  rospy.loginfo("Goal pose "+str(self.goal_cnt)+" received a cancel request before it started executing, successfully cancelled!")
+                  if status == 8:
+                        rospy.loginfo("Goal pose "+str(self.goal_cnt)+" received a cancel request before it started executing, successfully cancelled!")
 
     def set_pose(self):
             sp_id = self.set_pose_id

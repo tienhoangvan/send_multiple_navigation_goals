@@ -49,8 +49,7 @@ class MoveBaseSeq():
             if status == 2:
                   rospy.loginfo("Goal pose "+str(self.goal_cnt)+" received a cancel request after it started executing, completed execution!")
 
-            if status == 3:
-                  
+            if status == 3:             
                   self.goal_cnt += 1
                   rospy.loginfo("Goal pose "+str(self.goal_cnt)+" reached") 
                   if self.goal_cnt< len(self.pose_seq):
