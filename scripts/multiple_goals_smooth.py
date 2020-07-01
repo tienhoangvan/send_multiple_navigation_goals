@@ -63,9 +63,9 @@ class MoveBaseSeq():
                               self.goal_cnt = self.goal_cnt + 1
                               rospy.loginfo("Goal pose "+str(self.goal_cnt)+" reached")
                               if self.goal_cnt< len(self.pose_seq):
-                                    next_goal = MoveBaseGoal()
-                                    next_goal.target_pose.header.frame_id = "map"
-                                    next_goal.target_pose.header.stamp = rospy.Time.now()
+                                    next_vir_goal = MoveBaseGoal()
+                                    next_vir_goal.target_pose.header.frame_id = "map"
+                                    next_vir_goal.target_pose.header.stamp = rospy.Time.now()
 
                                     goal_pose = Pose()
                                     point = Point()
@@ -78,13 +78,13 @@ class MoveBaseSeq():
                                     quat = quaternion_from_euler(0.0, 0.0, self.pose_seq[self.goal_cnt][2])
                                     goal_pose.orientation = Quaternion(*quat)
 
-                                    next_goal.target_pose.pose = goal_pose
+                                    next_vir_goal.target_pose.pose = goal_pose
                                     self.cur_goal_pose = goal_pose
                                     self.goal_type_list.append(self.pose_seq[self.goal_cnt][3])
 
                                     rospy.loginfo("Sending goal pose "+str(self.goal_cnt+1)+" to Action Server")
                                     rospy.loginfo(str(goal_pose))
-                                    self.client.send_goal(next_goal, self.done_cb, self.active_cb, self.feedback_cb) 
+                                    self.client.send_goal(next_vir_goal, self.done_cb, self.active_cb, self.feedback_cb) 
                               else:
                                     rospy.loginfo("Final goal pose reached!")
                                     rospy.signal_shutdown("Final goal pose reached!")
